@@ -28,3 +28,20 @@ data = np.array(data)
 labels = np.array(labels)
 
 data = data / 255.0
+
+label_encoder = LabelEncoder()
+labels = label_encoder.fit_transform(labels)
+
+X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, random_state=42)
+
+model = Sequential()
+
+model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(64, 64, 3)))
+model.add(MaxPooling2D((2, 2)))
+
+model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(MaxPooling2D((2, 2)))
+
+model.add(Flatten())
+model.add(Dense(128, activation='relu'))
+model.add(Dense(26, activation='softmax'))
