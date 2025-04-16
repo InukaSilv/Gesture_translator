@@ -1,8 +1,11 @@
 import numpy as np
 import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  
 import cv2
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.layers import Dropout
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
 
@@ -49,12 +52,15 @@ X_test = X_test / 255.0
 model = Sequential([
     Conv2D(32, (3, 3), activation='relu', input_shape=(64, 64, 3)),
     MaxPooling2D((2, 2)),
+    Dropout(0.25),  # Randomly disable 25% of neurons
     Conv2D(64, (3, 3), activation='relu'),
     MaxPooling2D((2, 2)),
+    Dropout(0.25),
     Conv2D(128, (3, 3), activation='relu'),
     MaxPooling2D((2, 2)),
     Flatten(),
     Dense(256, activation='relu'),
+    Dropout(0.5),  # 50% dropout before final layer
     Dense(26, activation='softmax')
 ])
 
@@ -66,7 +72,7 @@ model.compile(optimizer='adam',
 history = model.fit(X_train, y_train, epochs=10)
 
 # Save and evaluate
-model.save('asl_model.h5')
+model.save('asl_model.keras')
 
 try:
     y_test = [filename.split('_')[0] for filename in test_filenames]

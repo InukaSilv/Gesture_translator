@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 from tensorflow.keras.models import load_model
 
-model = load_model('asl_model.h5')
+model = load_model('asl_model.keras')
 
 camera = cv2.VideoCapture(0)
 
