@@ -1,8 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        label 'built-in' 
+    }
     
     tools {
-        python "Python-3.12" 
+        'org.jenkinsci.plugins.shiningpanda.tools.PythonInstallation' 'Python-3.12'
     }
     
     stages {
@@ -14,21 +16,11 @@ pipeline {
         
         stage('Setup Python') {
             steps {
-                script {
-                    // Windows
-                    bat """
-                        python -m venv venv
-                        call venv\\Scripts\\activate
-                        python --version
-                    """
-                    
-                    // Linux (alternative)
-                    // sh '''
-                    //     python3 -m venv venv
-                    //     . venv/bin/activate
-                    //     python --version
-                    // '''
-                }
+                bat """
+                    python --version
+                    python -m venv venv
+                    call venv\\Scripts\\activate
+                """
             }
         }
         
@@ -36,6 +28,7 @@ pipeline {
             steps {
                 bat """
                     call venv\\Scripts\\activate
+                    pip install --upgrade pip
                     pip install -r requirements.txt
                 """
             }
